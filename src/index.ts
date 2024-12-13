@@ -1,4 +1,4 @@
-import {AnkrProvider, ethers} from "ethers";
+import { ethers } from "ethers";
 
 //check if the environment have ethereum global vars.
 function getEth() {
@@ -23,19 +23,26 @@ async function requestAccess(){
 
 }
 
+async function hasSiners() {
+    const metamask = getEth();
+    const signer = await metamask.request({method: "eth_accounts"}) as string[];
+    return signer.length > 0;
+}
+
 //connect contract
 async function getContract(){
     // 1.ADDRESS
     // 2.FUNCTION NAME 
     // 3.provider
 
-    if (await requestAccess()){
+    if (!await hasSiners() && !await requestAccess()){
         throw new Error("No ethereum provider found");
     }
 
-    const provider = new ethers.AbstractProvider(getEth());
+    const provider = new ethers.BrowserProvider(getEth());
+    const address = process.env.CONTRACT_ADDRESS;
     const contract = new ethers.Contract(
-        process.env.CONTRACT_ADDRESS,
+        address,
         [
             "function hello() public pure returns(string memory)"
         ],
@@ -49,3 +56,5 @@ async function getContract(){
 async function main() {
     await getContract();
 }
+
+main();
