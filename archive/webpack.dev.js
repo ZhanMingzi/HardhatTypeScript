@@ -1,7 +1,9 @@
 const dotenv = require("dotenv");
 dotenv.config();
+
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
     entry: "./src/index.ts", // bundle"s entry point
@@ -12,6 +14,8 @@ module.exports = {
     resolve: {
         extensions: [".js", ".ts", ".json"],
     },
+
+    
 
     module: {
         rules: [
@@ -33,4 +37,10 @@ module.exports = {
             inject: "body",
         }),
     ],
+
+    devServer: {
+        historyApiFallback: true,
+        port:8080,
+        hot:true
+    }
 };
